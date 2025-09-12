@@ -1,8 +1,5 @@
-using System;
-using System.Net.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
 using System.Net.Http.Headers;
 using System.Text;
@@ -26,14 +23,17 @@ var host = new HostBuilder()
                 var basicAuthValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{apiUser}:{apiKey}"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", basicAuthValue);
             }
-        });        
-
-        // Redis connection (using connection string)
-        services.AddSingleton<IConnectionMultiplexer>(_ =>
-        {
-            var cs = config["RedisConnectionString"] ?? throw new InvalidOperationException("RedisConnectionString not set");
-            return ConnectionMultiplexer.Connect(cs);
         });
+
+        if (bool.Parse(config["UseRedisCache"]))
+        { 
+            // Redis connection (using connection string)
+            services.AddSingleton<IConnectionMultiplexer>(_ =>
+            {
+                var cs = config["RedisConnectionString"] ?? throw new InvalidOperationException("RedisConnectionString not set");
+                return ConnectionMultiplexer.Connect(cs);
+            });
+        }
     })
     .Build();
 
