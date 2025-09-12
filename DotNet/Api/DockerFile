@@ -1,0 +1,52 @@
+# This instruction initializes a new build stage and sets the Base Image for the remaining
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build-env
+# sets the working directory for any remaining RUN, CMD, ENTRYPOINT, COPY, and ADD Dockerfile instructions. If the directory doesn't exist, it's created. In this case, WORKDIR is set to the app directory.
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers. Instruction copies new files or directories from the source path and adds them to the destination container filesystem
+COPY . Api/
+
+# Use if there are dependencies to internal package feeds 
+# ARG FeedAccessToken
+# RUN dotnet nuget add source https://<feed endpoint>/<collection>/_packaging/<feedname>/nuget/v3/index.json --name "<feedname>" -u User -p ${FeedAccessToken} --store-password-in-clear-text
+
+RUN dotnet restore ./Api/Api.csproj
+# Command compiles the application, reads through its dependencies specified in the project file, and publishes the resulting set of files to a directory. Our app is published with a Release configuration and output to the default directory.
+RUN dotnet publish ./Api/Api.csproj -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+
+# attempt to resolve Trivy scan issues
+RUN apt update && apt upgrade -y
+
+### Asp.net Core Environment
+ARG imagetag
+ARG versionhash
+
+WORKDIR /app
+### Do not run as root user
+## For Alpine Builds
+# RUN addgroup -S app && adduser -S -G app app
+# USER app
+
+## For Non Alpine Builds
+RUN chown -R www-data:www-data /app
+USER www-data
+
+COPY --from=build-env /app/out .
+### List all files now in this directory
+RUN ls -la
+
+### Need to run on port > 1024 for issue on .net core:
+# https://github.com/aspnet/AspNetCore/issues/4699
+ENV IMAGE_TAG=${imagetag}
+ENV VERSION_HASH=${versionhash}
+
+EXPOSE 8085
+
+#Run the app from the base image layer
+ENTRYPOINT ["dotnet", "Api.dll"]
+
+### Uncomment below to launch the container for debugging
+# CMD ["/bin/bash"]

@@ -1,0 +1,30 @@
+# Official Python Docker Image
+FROM python:3.13-slim
+
+# Prevent Python from writing .pyc files and buffer logs
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Set working directory 
+WORKDIR /app
+
+# Copy requirements first to leverage Docker Cache
+COPY requirements.txt .
+
+# Install Dependencies, then remove ecdsa (CVE-2024-23342)
+RUN pip install --upgrade pip \
+ && pip install --no-cache-dir -r requirements.txt \
+ && pip check
+
+# Copy application code
+COPY . .
+
+# Expose Port 8085 for FastApi
+EXPOSE 8085
+
+# Run the app with Uvicorn
+CMD ["uvicorn", "Carsharing:app", "--host", "0.0.0.0", "--port", "8085"]
+
+### Uncomment below to launch the container for debugging
+# CMD ["/bin/bash"]

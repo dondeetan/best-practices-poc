@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  my-dotnet-api:
+    image:  weatherforecast-dotnet:v2
+    container_name: my-dotnet-api
+    ports:
+      - "8085:8085"
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:8085
+
+  dapr_sidecar:
+    image: "dev.registry.apps.devjones.com/daprio/daprd:1.8.0-msft-1-linux-amd64"
+    container_name: dapr_sidecar
+    command: [
+      "./daprd",
+      "-app-id", "my-dotnet-api",
+      "-app-port", "8085",
+      "-dapr-http-port", "3500",
+      "-components-path", "/components"
+    ]
+    depends_on:
+      - my-dotnet-api
+    network_mode: "service:my-dotnet-api"
+    volumes:
+      - ./components:/components
