@@ -24,16 +24,12 @@ var host = new HostBuilder()
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", basicAuthValue);
             }
         });
-
-        if (bool.Parse(config["UseRedisCache"]))
-        { 
-            // Redis connection (using connection string)
-            services.AddSingleton<IConnectionMultiplexer>(_ =>
-            {
-                var cs = config["RedisConnectionString"] ?? throw new InvalidOperationException("RedisConnectionString not set");
-                return ConnectionMultiplexer.Connect(cs);
-            });
-        }
+        // Commenting for later use on DI Redis connection (using connection string)
+        // services.AddSingleton<IConnectionMultiplexer>(_ =>
+        // {
+        //     var cs = config["RedisConnectionString"] ?? throw new InvalidOperationException("RedisConnectionString not set");
+        //     return ConnectionMultiplexer.Connect(cs);
+        // });
     })
     .Build();
 

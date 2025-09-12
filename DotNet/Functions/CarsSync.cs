@@ -7,10 +7,9 @@ using StackExchange.Redis;
 
 namespace Functions;
 
-public class CarsSync(IHttpClientFactory httpClientFactory, IConnectionMultiplexer redis, ILogger<CarsSync> logger, IConfiguration configuration)
+public class CarsSync(IHttpClientFactory httpClientFactory, ILogger<CarsSync> logger, IConfiguration configuration)
 {
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
-    private readonly IConnectionMultiplexer _redis = redis;
     private readonly ILogger<CarsSync> _logger = logger;
     private readonly IConfiguration _configuration = configuration;
 
@@ -60,7 +59,9 @@ public class CarsSync(IHttpClientFactory httpClientFactory, IConnectionMultiplex
 
         if (bool.Parse(_configuration["UseRedisCache"]))
         {
-            var db = _redis.GetDatabase();
+            var connectionString = _configuration["RedisConnectionString"] ?? throw new InvalidOperationException("RedisConnectionString not set");
+            var redis = ConnectionMultiplexer.Connect(connectionString);
+            var db = redis.GetDatabase();
 
             // Use a pipeline (IBatch) for throughput
             var batch = db.CreateBatch();
