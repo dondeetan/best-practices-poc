@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
+using System.Net.Http.Headers;
+using System.Text;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -24,9 +26,11 @@ var host = new HostBuilder()
             var baseUrl = config["CarsApi:BaseUrl"] ?? throw new InvalidOperationException("CarsApi:BaseUrl not set");
             client.BaseAddress = new Uri(baseUrl);
             var apiKey = config["CarsApi:ApiKey"];
-            if (!string.IsNullOrWhiteSpace(apiKey))
+            var apiUser = config["CarsApi:ApiUser"];
+            if (!string.IsNullOrWhiteSpace(apiKey) && !string.IsNullOrWhiteSpace(apiUser))
             {
-                client.DefaultRequestHeaders.Add("x-api-key", apiKey);
+                var basicAuthValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{apiUser}:{apiKey}"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", basicAuthValue);
             }
         });
 
