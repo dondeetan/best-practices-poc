@@ -10,12 +10,6 @@ using System.Text;
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
     .ConfigureFunctionsWorkerDefaults()
-    .ConfigureAppConfiguration((ctx, cfg) =>
-    {
-        cfg.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-           .AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true)
-           .AddEnvironmentVariables();
-    })
     .ConfigureServices((ctx, services) =>
     {
         var config = ctx.Configuration;
@@ -23,21 +17,21 @@ var host = new HostBuilder()
         // HttpClient for the external API
         services.AddHttpClient("cars-api", client =>
         {
-            var baseUrl = config["CarsApi:BaseUrl"] ?? throw new InvalidOperationException("CarsApi:BaseUrl not set");
+            var baseUrl = config["CarsApiBaseUrl"] ?? throw new InvalidOperationException("CarsApi:BaseUrl not set");
             client.BaseAddress = new Uri(baseUrl);
-            var apiKey = config["CarsApi:ApiKey"];
-            var apiUser = config["CarsApi:ApiUser"];
+            var apiKey = config["CarsApiKey"];
+            var apiUser = config["CarsApiUser"];
             if (!string.IsNullOrWhiteSpace(apiKey) && !string.IsNullOrWhiteSpace(apiUser))
             {
                 var basicAuthValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{apiUser}:{apiKey}"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", basicAuthValue);
             }
-        });
+        });        
 
         // Redis connection (using connection string)
         services.AddSingleton<IConnectionMultiplexer>(_ =>
         {
-            var cs = config["Redis:ConnectionString"] ?? throw new InvalidOperationException("Redis:ConnectionString not set");
+            var cs = config["RedisConnectionString"] ?? throw new InvalidOperationException("RedisConnectionString not set");
             return ConnectionMultiplexer.Connect(cs);
         });
     })
