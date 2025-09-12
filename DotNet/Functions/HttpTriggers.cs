@@ -5,11 +5,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Functions;
 
-public class HttpTriggerGetWeather
+public class HttpTrigger
 {
-    private readonly ILogger<HttpTriggerGetWeather> _logger;
+    private readonly ILogger<HttpTrigger> _logger;
 
-    public HttpTriggerGetWeather(ILogger<HttpTriggerGetWeather> logger)
+    public HttpTrigger(ILogger<HttpTrigger> logger)
     {
         _logger = logger;
     }
