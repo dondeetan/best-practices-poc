@@ -51,20 +51,20 @@ public class CarsSync(IHttpClientFactory httpClientFactory, IConnectionMultiplex
             string carKey = $"car:{car.Id}";
             string carJson = JsonSerializer.Serialize(car);
 
-            batch.StringSetAsync(carKey, carJson);
+            await batch.StringSetAsync(carKey, carJson);
 
             // Indexes (Sets): global and per-employee
-            batch.SetAddAsync(allCarsKey, car.Id);
+            await batch.SetAddAsync(allCarsKey, car.Id);
             if (car.EmployeeId != 0)
             {
                 string empIndexKey = $"employee:{car.EmployeeId}:cars";
-                batch.SetAddAsync(empIndexKey, car.Id);
+                await batch.SetAddAsync(empIndexKey, car.Id);
             }
         }
 
         // Optional: also store a full snapshot list (expires in 1 hour)
         string snapshotKey = "cars:snapshot";
-        batch.StringSetAsync(snapshotKey, JsonSerializer.Serialize(cars), TimeSpan.FromHours(1));
+        await batch.StringSetAsync(snapshotKey, JsonSerializer.Serialize(cars), TimeSpan.FromHours(1));
 
         batch.Execute();
 
