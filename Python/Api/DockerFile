@@ -23,6 +23,7 @@ try:
     raise SystemExit("ERROR: ecdsa still importable")
 except ModuleNotFoundError:
     print("OK: ecdsa not present")
+PY
 
 # Copy application code
 COPY . .
