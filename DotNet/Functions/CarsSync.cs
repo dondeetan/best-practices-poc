@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Text.Json;
 using Functions.Entities;
 using Microsoft.Azure.Functions.Worker;
@@ -38,7 +39,7 @@ public class CarsSync(IHttpClientFactory httpClientFactory, ILogger<CarsSync> lo
 
         var clientWithTokenAuth = _httpClientFactory.CreateClient();
         clientWithTokenAuth.BaseAddress = clientWithBasicAuth.BaseAddress;
-        clientWithTokenAuth.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.AccessToken);
+        clientWithTokenAuth.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
         // Adjust to your endpoint path (e.g., /api/cars)
         var response = await clientWithTokenAuth.GetAsync("api/cars");

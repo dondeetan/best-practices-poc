@@ -1,9 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
-using StackExchange.Redis;
 using Api.Interfaces;
 using Api.Services;
+using System.Text;
+using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,19 @@ builder.WebHost.UseUrls("http://0.0.0.0:8085");
 builder.Services.AddControllers();
 
 // Register HttpClient for DI
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("cars-api", (provider, client) =>
+{
+    var config = provider.GetRequiredService<IConfiguration>();
+    var baseUrl = config["CarsApiBaseUrl"] ?? throw new InvalidOperationException("CarsApi:BaseUrl not set");
+    client.BaseAddress = new Uri(baseUrl);
+    var apiKey = config["CarsApiKey"];
+    var apiUser = config["CarsApiUser"];
+    if (!string.IsNullOrWhiteSpace(apiKey) && !string.IsNullOrWhiteSpace(apiUser))
+    {
+        var basicAuthValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{apiUser}:{apiKey}"));
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", basicAuthValue);
+    }
+});
 
 // Add authentication services
 builder.Services.AddAuthentication("Bearer")
@@ -50,17 +63,8 @@ builder.Services.Configure<JsonOptions>(o =>
     o.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
-// Redis connection (Azure Redis Cache)
-builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
-{
-    // Example Azure Redis connection string pattern:
-    // "<your-redis-name>.redis.cache.windows.net:6380,password=<primary-key>,ssl=True,abortConnect=False"
-    var connStr = builder.Configuration.GetConnectionString("Redis") 
-                  ?? throw new InvalidOperationException("Missing Redis connection string");
-    return ConnectionMultiplexer.Connect(connStr);
-});
-
-builder.Services.AddScoped<ICarCache, CarCacheService>();
+// Use CarApiService instead of CarCacheService
+builder.Services.AddScoped<ICarCache, CarApiService>();
 builder.Services.AddSingleton<IEmployeeRepository, InMemoryEmployeeRepositoryService>();
 
 // Configure the HTTP request pipeline.
@@ -73,9 +77,9 @@ app.MapControllers();
 
 // Example usage of JwtTokenValidator
 var jwtToken = "your-jwt-token"; // Replace with the actual token
-var issuer = builder.Configuration["Jwt:Issuer"];
-var audience = builder.Configuration["Jwt:Audience"];
-var signingKey = builder.Configuration["Jwt:SigningKey"];
+var issuer = builder.Configuration["Jwt:Issuer"] ?? string.Empty;
+var audience = builder.Configuration["Jwt:Audience"] ?? string.Empty;
+var signingKey = builder.Configuration["Jwt:SigningKey"] ?? string.Empty;
 
 var claimsPrincipal = Api.Helpers.JwtTokenValidator.ValidateToken(jwtToken, issuer, audience, signingKey);
 
