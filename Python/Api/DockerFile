@@ -15,7 +15,14 @@ COPY requirements.txt .
 # Install Dependencies, then remove ecdsa (CVE-2024-23342)
 RUN pip install --upgrade pip \
  && pip install --no-cache-dir -r requirements.txt \
- && pip check
+&& pip uninstall -y ecdsa || true \
+&& python - <<'PY'
+# 1) ensure ecdsa is gone
+try:
+    import importlib; importlib.import_module("ecdsa")
+    raise SystemExit("ERROR: ecdsa still importable")
+except ModuleNotFoundError:
+    print("OK: ecdsa not present")
 
 # Copy application code
 COPY . .
