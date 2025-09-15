@@ -27,7 +27,7 @@ public class CarApiService : ICarCache
 
     public async Task<List<Car>> GetVehiclesForEmployeeAsync(int employeeId)
     {
-        var clientWithBasicAuth = _httpClientFactory.CreateClient();
+        var clientWithBasicAuth = _httpClientFactory.CreateClient("cars-api");
 
         // Get Token
         var tokenresponse = await clientWithBasicAuth.PostAsync("auth/token", null);
