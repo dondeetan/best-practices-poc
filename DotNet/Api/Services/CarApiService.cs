@@ -32,10 +32,7 @@ public class CarApiService : ICarCache
         {
             var accessToken = await GetApiTokenAsync(client);
             if (string.IsNullOrWhiteSpace(accessToken)) return new List<Car>();
-
-            var apiClient = _httpClientFactory.CreateClient();
-            apiClient.BaseAddress = client.BaseAddress;
-            return await GetCarsForEmployeeAsync(apiClient, employeeId, accessToken);
+            return await GetCarsForEmployeeAsync(employeeId, accessToken);
         }
         catch (Exception ex)
         {
@@ -73,8 +70,17 @@ public class CarApiService : ICarCache
         return token.AccessToken;
     }
 
-    private async Task<List<Car>> GetCarsForEmployeeAsync(HttpClient apiClient, int employeeId, string accessToken)
+    private async Task<List<Car>> GetCarsForEmployeeAsync(int employeeId, string accessToken)
     {
+        
+        var apiClient = _httpClientFactory.CreateClient();
+        var baseUrl = _configuration["CarsApiBaseUrl"];
+        if (string.IsNullOrWhiteSpace(baseUrl))
+        {
+            _logger.LogError("CarsApiBaseUrl is not configured.");
+            return [];
+        }
+        apiClient.BaseAddress = new Uri(baseUrl);
         apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var response = await apiClient.GetAsync($"api/cars?employeeid={employeeId}");
         if (!response.IsSuccessStatusCode)
