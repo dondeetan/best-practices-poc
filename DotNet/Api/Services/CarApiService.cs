@@ -27,42 +27,21 @@ public class CarApiService : ICarCache
 
     public async Task<List<Car>> GetVehiclesForEmployeeAsync(int employeeId)
     {
-        var clientWithBasicAuth = _httpClientFactory.CreateClient("cars-api");
-
-        // Get Token
-        var tokenresponse = await clientWithBasicAuth.PostAsync("auth/token", null);
-        if (!tokenresponse.IsSuccessStatusCode)
+        var client = _httpClientFactory.CreateClient("cars-api");
+        try
         {
-            _logger.LogError("Cars API returned {status}", tokenresponse.StatusCode);
-            return [];
+            var accessToken = await GetApiTokenAsync(client);
+            if (string.IsNullOrWhiteSpace(accessToken)) return new List<Car>();
+
+            var apiClient = _httpClientFactory.CreateClient();
+            apiClient.BaseAddress = client.BaseAddress;
+            return await GetCarsForEmployeeAsync(apiClient, employeeId, accessToken);
         }
-
-        var json = await tokenresponse.Content.ReadAsStringAsync();
-
-        var token = JsonSerializer.Deserialize<Token>(json, new JsonSerializerOptions
+        catch (Exception ex)
         {
-            PropertyNameCaseInsensitive = true
-        }) ?? new Token();
-
-        var clientWithTokenAuth = _httpClientFactory.CreateClient();
-        clientWithTokenAuth.BaseAddress = clientWithBasicAuth.BaseAddress;
-        clientWithTokenAuth.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-
-        // Adjust to your endpoint path (e.g., /api/cars)
-        var response = await clientWithTokenAuth.GetAsync("api/cars");
-        if (!response.IsSuccessStatusCode)
-        {
-            _logger.LogError("Cars API returned {status}", response.StatusCode);
-            return [];
+            _logger.LogError(ex, "Exception occurred while fetching vehicles for employee {employeeId}", employeeId);
+            return new List<Car>();
         }
-
-        var jsonresponse = await response.Content.ReadAsStringAsync();
-
-        var cars = JsonSerializer.Deserialize<List<Car>>(jsonresponse, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        }) ?? new List<Car>();
-        return cars;
     }
 
     public Task SetVehiclesForEmployeeAsync(int employeeId, List<Car> vehicles)
@@ -73,5 +52,38 @@ public class CarApiService : ICarCache
     public Task DeleteVehiclesForEmployeeAsync(int employeeId)
     {
         throw new NotImplementedException("Deleting vehicles is not supported via API");
+    }
+
+    
+    private async Task<string?> GetApiTokenAsync(HttpClient client)
+    {
+        var tokenResponse = await client.PostAsync("auth/token", null);
+        if (!tokenResponse.IsSuccessStatusCode)
+        {
+            _logger.LogError("Cars API token request failed: {status}", tokenResponse.StatusCode);
+            return null;
+        }
+        var tokenJson = await tokenResponse.Content.ReadAsStringAsync();
+        var token = JsonSerializer.Deserialize<Token>(tokenJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        if (token == null || string.IsNullOrWhiteSpace(token.AccessToken))
+        {
+            _logger.LogError("Cars API token is null or empty");
+            return null;
+        }
+        return token.AccessToken;
+    }
+
+    private async Task<List<Car>> GetCarsForEmployeeAsync(HttpClient apiClient, int employeeId, string accessToken)
+    {
+        apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        var response = await apiClient.GetAsync($"api/cars?employeeid={employeeId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogError("Cars API returned {status} for employee {employeeId}", response.StatusCode, employeeId);
+            return new List<Car>();
+        }
+        var carsJson = await response.Content.ReadAsStringAsync();
+        var cars = JsonSerializer.Deserialize<List<Car>>(carsJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<Car>();
+        return cars;
     }
 }
