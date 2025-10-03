@@ -29,10 +29,10 @@ PY
 COPY . .
 
 # Expose Port 8085 for FastApi
-EXPOSE 8085
+EXPOSE 8086
 
 # Run the app with Uvicorn
-CMD ["uvicorn", "Carsharing:app", "--host", "0.0.0.0", "--port", "8085"]
+CMD ["uvicorn", "Carsharing:app", "--host", "0.0.0.0", "--port", "8086"]
 
 ### Uncomment below to launch the container for debugging
 # CMD ["/bin/bash"]
