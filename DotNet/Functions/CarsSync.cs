@@ -16,7 +16,7 @@ public class CarsSync(IHttpClientFactory httpClientFactory, ILogger<CarsSync> lo
 
     // NCRONTAB with seconds (Runs Daily Midnight Function): "0 0 0 * * *"
     [Function("CarsSync")]
-    public async Task RunAsync([TimerTrigger("0 0 0 * * *")] TimerInfo timerInfo)
+    public async Task RunAsync([TimerTrigger("0 0 0 * * *", RunOnStartup = true)] TimerInfo timerInfo)
     {
         _logger.LogInformation("CarsSync started at {ts}", DateTimeOffset.UtcNow);
 

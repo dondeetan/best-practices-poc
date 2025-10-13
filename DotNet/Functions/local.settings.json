@@ -5,9 +5,9 @@
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
     "AzureWebJobsDisableHomepage": "true", 
     "FUNCTIONS_EXTENSION_VERSION": "~4",
-    "CarsApiBaseUrl": "",
-    "CarsApiUser": "",
-    "CarsApiKey": "",
+    "CarsApiBaseUrl": "http://localhost:8086/",
+    "CarsApiUser": "userkey",
+    "CarsApiKey": "<insertkey>",
     "RedisConnectionString": "",
     "UseRedisCache":"false"
   },
