@@ -169,4 +169,4 @@ def add_trip(car_id: int, trip: TripInput, user: str = Depends(get_current_user)
 
 
 if __name__ == "__main__":
-    uvicorn.run("Carsharing:app", reload=True)
+    uvicorn.run("Carsharing:app", reload=True, host="0.0.0.0", port=8086)
