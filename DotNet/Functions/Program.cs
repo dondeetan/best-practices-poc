@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 using System.Net.Http.Headers;
 using System.Text;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -10,6 +11,9 @@ var host = new HostBuilder()
     .ConfigureServices((ctx, services) =>
     {
         var config = ctx.Configuration;
+        
+        // Add OpenTelemetry and configure it to use Azure Monitor.
+        services.AddOpenTelemetry().UseAzureMonitor();
 
         // HttpClient for the external API
         services.AddHttpClient("cars-api", client =>
