@@ -1,10 +1,10 @@
 import azure.functions as func
 import logging
 
-app = func.FunctionApp(http_auth_level=func.AuthLevel.Anonymous)
+app = func.FunctionApp()
 
-@app.route(route="http_trigger_get_weather")
-def http_trigger_get_weather(req: func.HttpRequest) -> func.HttpResponse:
+@app.route(route="httptriggerwelcomeanonymous", auth_level=func.AuthLevel.ANONYMOUS)
+def http_trigger_welcome(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
     name = req.params.get('name')
@@ -23,3 +23,13 @@ def http_trigger_get_weather(req: func.HttpRequest) -> func.HttpResponse:
              "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
              status_code=200
         )
+
+
+@app.timer_trigger(schedule="0 0 * * * *", arg_name="my_timer", run_on_startup=False, use_monitor=True)
+def timer_trigger_hourly(my_timer: func.TimerRequest) -> str:
+    if my_timer.past_due:
+        logging.warning("The timer is past due.")
+
+    message = "Hello,  This Timmer triggered function executed successfully."
+    logging.info(message)
+    return message
