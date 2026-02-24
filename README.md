@@ -13,7 +13,7 @@ Best Practices and POC # Sample Cloud Projects for Azure Hosting Solutions
 │ │ ├── Helpers/ # Helper classes for common functionality (e.g., JWT validation) 
 │ │ ├── Program.cs # Entry point for the .NET application 
 │ │ └── appsettings.json # Configuration file for the .NET application 
-│ └── Tests/ # Unit tests for the .NET API 
+│ └── Api.Tests/ # Unit tests for the .NET API 
 │ ├── Python/ 
 │ ├── Api/ # Contains the FastAPI project 
 │ │ ├── WeatherForecastService.py # Main FastAPI application file 
@@ -45,13 +45,17 @@ The `.NET` folder contains a sample API built with ASP.NET Core.
 3. The API will be available at `http://localhost:8085` (or the configured URL in Program.cs).
 
 ### Run Unit Tests
-1. Navigate to the `DotNet/Tests` folder:
+1. Navigate to the `DotNet/Api.Tests` folder:
    ```bash
-   cd DotNet/Tests
+   cd DotNet/Api.Tests
    ```   
 2. Run the tests:
    ```bash
    dotnet test
+   ```
+3. Or run tests from the repository root:
+   ```bash
+   dotnet test DotNet/Api.Tests/Api.Tests.csproj
    ```
 
 ### Build Docker Container
