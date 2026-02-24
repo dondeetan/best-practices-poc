@@ -24,8 +24,9 @@ def http_trigger_welcome(req: func.HttpRequest) -> func.HttpResponse:
              status_code=200
         )
 
-
-@app.timer_trigger(schedule="0 0 * * * *", arg_name="my_timer", run_on_startup=True, use_monitor=True)
+# NCRONTAB: second minute hour day month day-of-week
+# "0 0 */12 * * *" runs at 00:00 and 12:00 every day (every 12 hours).
+@app.timer_trigger(schedule="0 0 */12 * * *", arg_name="my_timer", run_on_startup=True, use_monitor=True)
 def timer_trigger_hourly(my_timer: func.TimerRequest) -> None:
     if my_timer.past_due:
         logging.warning("The timer is past due.")
