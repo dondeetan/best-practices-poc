@@ -22,3 +22,9 @@ Start the Azure Functions host:
 ```bash
    func start
 ```
+
+Run in Docker on a non-7071 port (host `7073` -> container `80`):
+```bash
+   docker build -t functions-python:v1 -f DockerFile .
+   docker run --rm -p 7073:80 -e AzureWebJobsStorage=UseDevelopmentStorage=true -e FUNCTIONS_WORKER_RUNTIME=python functions-python:v1
+```

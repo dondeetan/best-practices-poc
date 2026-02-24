@@ -25,11 +25,10 @@ def http_trigger_welcome(req: func.HttpRequest) -> func.HttpResponse:
         )
 
 
-@app.timer_trigger(schedule="0 0 * * * *", arg_name="my_timer", run_on_startup=False, use_monitor=True)
-def timer_trigger_hourly(my_timer: func.TimerRequest) -> str:
+@app.timer_trigger(schedule="0 0 * * * *", arg_name="my_timer", run_on_startup=True, use_monitor=True)
+def timer_trigger_hourly(my_timer: func.TimerRequest) -> None:
     if my_timer.past_due:
         logging.warning("The timer is past due.")
 
     message = "Hello,  This Timmer triggered function executed successfully."
     logging.info(message)
-    return message
