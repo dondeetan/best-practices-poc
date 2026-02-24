@@ -24,7 +24,7 @@ public class HttpTrigger
     }
 
     [Function("HttpTriggerGetAuthorizationLevelFunction")]
-    public IActionResult GetFAuthorizationLevelunction([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
+    public IActionResult GetAuthorizationLevelFunction([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
     {
         _logger.LogInformation("C# HTTP trigger function processed a request. Using AuthorizationLevel.Function");
         return new OkObjectResult("Function - Welcome to Azure Functions!");
