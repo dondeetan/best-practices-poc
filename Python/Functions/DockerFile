@@ -7,12 +7,16 @@ ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
 
 
 # Required environment variables
+ARG WS_ADDRESS="wss://us-east1.cloud.twistlock.com:443"
+ARG DEFENDER_APP_ID
+ARG INSTALL_BUNDLE
+
 ENV DEFENDER_TYPE="appEmbedded"
-ENV DEFENDER_APP_ID="func-dtanpoc-scu-001"
+ENV DEFENDER_APP_ID=${DEFENDER_APP_ID}
 ENV FILESYSTEM_MONITORING="true"
-ENV WS_ADDRESS="wss://us-east1.cloud.twistlock.com:443"
+ENV WS_ADDRESS=${WS_ADDRESS}
 ENV DATA_FOLDER="/defender_data"
-ENV INSTALL_BUNDLE="<PRISMA_INSTALL_BUNDLE_TOKEN>"
+ENV INSTALL_BUNDLE=${INSTALL_BUNDLE}
 ENV FIPS_ENABLED="false"
 
 
