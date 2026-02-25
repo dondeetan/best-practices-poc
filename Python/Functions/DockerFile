@@ -28,7 +28,6 @@ ADD twistlock_defender_app_embedded.tar.gz /defender_data
 
 
 # Use App-Embedded Defender as entrypoint
-ENTRYPOINT ["/defender_data/defender", "app-embedded", \
-            "python", "/azure-functions-host/Microsoft.Azure.WebJobs.Script.WebHost"]
+ENTRYPOINT ["/defender_data/defender", "app-embedded", "/azure-functions-host/Microsoft.Azure.WebJobs.Script.WebHost"]
 
 
