@@ -1,5 +1,4 @@
 # OpenTelemetry export pipeline for Azure Monitor / Application Insights
 # Ref: aka.ms/functions-azure-monitor-python
 azure-monitor-opentelemetry
-
 azure-functions
