@@ -17,8 +17,6 @@ ENV FILESYSTEM_MONITORING="false"
 ENV WS_ADDRESS=${WS_ADDRESS}
 ENV DATA_FOLDER="/defender_data"
 ENV INSTALL_BUNDLE=${INSTALL_BUNDLE}
-ENV FIPS_ENABLED="false"
-
 
 COPY requirements.txt /
 RUN pip install -r /requirements.txt
