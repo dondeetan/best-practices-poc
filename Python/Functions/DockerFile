@@ -5,7 +5,28 @@ FROM mcr.microsoft.com/azure-functions/python:4-python3.11
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true
 
+
+# Required environment variables
+ENV DEFENDER_TYPE="appEmbedded"
+ENV DEFENDER_APP_ID="func-dtanpoc-scu-001"
+ENV FILESYSTEM_MONITORING="true"
+ENV WS_ADDRESS="wss://us-east1.cloud.twistlock.com:443"
+ENV DATA_FOLDER="/defender_data"
+ENV INSTALL_BUNDLE="<PRISMA_INSTALL_BUNDLE_TOKEN>"
+ENV FIPS_ENABLED="false"
+
+
 COPY requirements.txt /
 RUN pip install -r /requirements.txt
 
 COPY . /home/site/wwwroot
+
+# Copy the defender bundle
+ADD twistlock_defender_app_embedded.tar.gz /defender_data
+
+
+# Use App-Embedded Defender as entrypoint
+ENTRYPOINT ["/defender_data/defender", "app-embedded", \
+            "python", "/azure-functions-host/Microsoft.Azure.WebJobs.Script.WebHost"]
+
+
