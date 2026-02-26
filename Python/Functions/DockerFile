@@ -26,8 +26,5 @@ COPY . /home/site/wwwroot
 # Copy the defender bundle
 ADD twistlock_defender_app_embedded.tar.gz /defender_data
 
-
 # Use App-Embedded Defender as entrypoint
-ENTRYPOINT ["/defender_data/defender", "app-embedded", "/azure-functions-host/Microsoft.Azure.WebJobs.Script.WebHost"]
-
-
+ENTRYPOINT ["/defender_data/defender", "app-embedded", "/azure-functions-host/Microsoft.Azure.WebJobs.Script.WebHost", "--host", "0.0.0.0", "--port", "80"]
