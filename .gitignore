@@ -7,11 +7,20 @@ __pycache__/
 *.so
 
 # .Net
-obj
+bin/
+obj/
+**/bin/
+**/obj/
 [Dd]ebug
 [Rr]elease
 .vs
 .vscode
+TestResults/
+.dotnet/
+.nuget/
+*.user
+*.suo
+*.rsuser
 
 # Python Virtual Environment
 myenv/
@@ -139,6 +148,10 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Azure Functions local files
+local.settings.json
+.azurefunctions/
 
 # Spyder project settings
 .spyderproject

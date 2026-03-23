@@ -1,190 +1,249 @@
-# Best Practices and POC
+# Best Practices POC
 
-Sample .NET and Python projects for Azure-hosted API and function scenarios.
+This public repository is a side-by-side reference for two common Azure application shapes in both `.NET` and `Python`:
 
-## Repository Structure
+- HTTP APIs
+- Azure Functions apps
+
+If you are reading the repo on GitHub, the fastest path is:
+
+1. Pick a stack: `.NET` or `Python`.
+2. Open the application project first.
+3. Open the matching test project next.
+4. Use the build, test, run, and Docker commands below from the repository root unless a section says otherwise.
+
+## Repository Map
 
 ```text
 best-practices-poc/
-├─ DotNet/
-│  ├─ Api/                 # ASP.NET Core sample API
-│  ├─ Api.Tests/           # Unit tests for the .NET API
-│  └─ Functions/           # Azure Functions sample
-├─ Python/
-│  ├─ Api/                 # FastAPI sample API
-│  │  ├─ Carsharing.py
-│  │  ├─ WeatherForecastService.py
-│  │  ├─ Entities/
-│  │  ├─ Sources/
-│  │  ├─ appsettings
-│  │  └─ requirements.txt
-│  ├─ Api.Tests/           # Pytest-based tests for the Python API
-│  │  ├─ conftest.py
-│  │  ├─ test_carsharing.py
-│  │  ├─ pytest.ini
-│  │  └─ requirements.txt
-│  └─ Functions/           # Python Azure Functions sample
-├─ best-practices-poc.sln  # Visual Studio solution for .NET projects
-└─ README.md
+|-- DotNet/
+|   |-- Api/                 # ASP.NET Core API
+|   |-- Api.Tests/           # Unit tests for DotNet/Api
+|   |-- Functions/           # Azure Functions isolated worker app
+|   `-- Functions.Tests/     # Unit tests for DotNet/Functions
+|-- Python/
+|   |-- Api/                 # FastAPI app
+|   |-- Api.Tests/           # Pytest suite for Python/Api
+|   |-- Functions/           # Python Azure Functions app
+|   `-- Functions.Tests/     # Pytest suite for Python/Functions
+|-- best-practices-poc.sln   # Visual Studio solution for .NET projects
+`-- README.md
 ```
 
-## .NET
+## Prerequisites
 
-The `DotNet` folder contains a sample API built with ASP.NET Core and a matching unit test project.
+Install the tools that match the projects you want to explore:
 
-### Prerequisites
+- `.NET 8 SDK`
+- `Python 3.11+`
+- `Docker Desktop` or another Docker engine
+- `Azure Functions Core Tools` for local Functions runs
+- Optional for Functions local development: `Azurite`
 
-- .NET 8 SDK
+## Project Guide
 
-### Run the .NET API
+### DotNet/Api
 
-1. Change to the API folder.
-   ```bash
-   cd DotNet/Api
-   ```
-2. Start the application.
-   ```bash
-   dotnet run
-   ```
-3. The API is available at `http://localhost:8085` unless changed in configuration.
+Purpose:
+ASP.NET Core Web API that serves employee data and integrates with external car data.
 
-### Run .NET Unit Tests
+Read this project on GitHub:
 
-1. Change to the test project.
-   ```bash
-   cd DotNet/Api.Tests
-   ```
-2. Run the tests.
-   ```bash
-   dotnet test
-   ```
+- Start with `DotNet/Api/Program.cs` for startup and dependency wiring.
+- Open `DotNet/Api/Controllers/EmployeeController.cs` for the API surface.
+- Review `DotNet/Api/Services/` and `DotNet/Api/Entities/` for behavior and models.
+- Open `DotNet/Api.Tests/` next to see the unit-tested scenarios.
 
-You can also run the tests from the repository root:
+Build:
+
+```bash
+dotnet build DotNet/Api/Api.csproj
+```
+
+Test:
 
 ```bash
 dotnet test DotNet/Api.Tests/Api.Tests.csproj
 ```
 
-### Build the .NET Docker Image
-
-1. Change to the API folder.
-   ```bash
-   cd DotNet/Api
-   ```
-2. Build the image.
-   ```bash
-   docker build -f ./DockerFile -t employeeservice-dotnet:v1 .
-   ```
-3. Run the container.
-   ```bash
-   docker run -it --rm employeeservice-dotnet:v1
-   ```
-
-## Python
-
-The `Python` folder contains a FastAPI sample API, a Python Azure Functions sample, and a dedicated `Api.Tests` test project for the API.
-
-### Prerequisites
-
-- Python 3.9 or later
-- `pip`
-
-### Set Up a Virtual Environment
-
-1. Change to the Python API folder.
-   ```bash
-   cd Python/Api
-   ```
-2. Create a virtual environment.
-   ```bash
-   python -m venv .venv
-   ```
-3. Activate it.
-
-On Windows:
+Run:
 
 ```bash
-.venv\Scripts\activate
+dotnet run --project DotNet/Api/Api.csproj
 ```
 
-On macOS/Linux:
+Local URL:
+`http://localhost:8085`
+
+Docker image:
 
 ```bash
-source .venv/bin/activate
+docker build -f DotNet/Api/DockerFile -t best-practices-dotnet-api:v1 DotNet/Api
+docker run --rm -p 8085:8085 best-practices-dotnet-api:v1
 ```
 
-4. Install the API dependencies.
-   ```bash
-   python -m pip install --no-cache-dir -r requirements.txt
-   ```
+### DotNet/Functions
 
-### Configure the Python API
+Purpose:
+Azure Functions isolated worker app with HTTP-triggered and timer-triggered functions.
 
-The FastAPI app reads `Python/Api/appsettings` at startup. Set a value for `userkey` before running locally.
+Read this project on GitHub:
 
-Example:
+- Start with `DotNet/Functions/Program.cs` for host setup, telemetry, and `HttpClient` registration.
+- Open `DotNet/Functions/HttpTriggers.cs` for the HTTP entry points.
+- Open `DotNet/Functions/CarsSync.cs` for the timer-driven sync workflow.
+- Review `DotNet/Functions/local.env` and `DotNet/Functions/docker-compose.yml` for expected local configuration.
+- Open `DotNet/Functions.Tests/` next to see the unit-tested behavior.
+
+Build:
+
+```bash
+dotnet build DotNet/Functions/Functions.csproj
+```
+
+Test:
+
+```bash
+dotnet test DotNet/Functions.Tests/Functions.Tests.csproj
+```
+
+Run:
+
+Before starting locally, provide the values shown in `DotNet/Functions/local.env` as environment variables or create an equivalent `local.settings.json`. At minimum, the app expects storage, worker runtime, API credentials, and cache settings.
+
+```bash
+cd DotNet/Functions
+func start
+```
+
+Default local URL:
+`http://localhost:7071`
+
+Docker image:
+
+```bash
+docker build -f DotNet/Functions/DockerFile -t best-practices-dotnet-functions:v1 DotNet/Functions
+docker run --rm -p 7071:80 -e AzureWebJobsStorage=UseDevelopmentStorage=true -e FUNCTIONS_WORKER_RUNTIME=dotnet-isolated -e FUNCTIONS_EXTENSION_VERSION=~4 -e ASPNETCORE_URLS=http://0.0.0.0:80 -e CarsApiBaseUrl=http://host.docker.internal:8086/ -e CarsApiUser=userkey -e CarsApiKey=<insertkey> -e UseRedisCache=false best-practices-dotnet-functions:v1
+```
+
+### Python/Api
+
+Purpose:
+FastAPI app that exposes authentication and car-sharing endpoints.
+
+Read this project on GitHub:
+
+- Start with `Python/Api/Carsharing.py` for startup, auth, and routes.
+- Open `Python/Api/Entities/Cars.py` for the persisted model and JSON storage helpers.
+- Review `Python/Api/Sources/cars.json` for the seed data.
+- Open `Python/Api.Tests/` next to see the isolated pytest coverage.
+
+Build:
+
+The local build step is installing the application dependencies.
+
+```bash
+python -m pip install --no-cache-dir -r Python/Api/requirements.txt
+```
+
+Test:
+
+The API reads `Python/Api/appsettings`, so keep `userkey=<insertkey>` or another local value there before running tests.
+
+```bash
+python -m pip install --no-cache-dir -r Python/Api.Tests/requirements.txt
+python -m pytest Python/Api.Tests -q
+```
+
+Run:
+
+```bash
+python -m uvicorn Carsharing:app --app-dir Python/Api --host 0.0.0.0 --port 8086
+```
+
+Alternative run command from the project folder:
+
+```bash
+cd Python/Api
+python Carsharing.py
+```
+
+Local URL:
+`http://localhost:8086`
+
+Docker image:
+
+```bash
+docker build -f Python/Api/DockerFile -t best-practices-python-api:v1 Python/Api
+docker run --rm -p 8086:8086 best-practices-python-api:v1
+```
+
+### Python/Functions
+
+Purpose:
+Python Azure Functions app with one HTTP trigger and one timer trigger.
+
+Read this project on GitHub:
+
+- Start with `Python/Functions/function_app.py` for the trigger definitions.
+- Review `Python/Functions/requirements.txt` and `Python/Functions/host.json` for runtime dependencies and host configuration.
+- Open `Python/Functions.Tests/` next to see the unit tests for the trigger functions.
+
+Build:
+
+The local build step is installing the function app dependencies.
+
+```bash
+python -m pip install --no-cache-dir -r Python/Functions/requirements.txt
+```
+
+Test:
+
+```bash
+python -m pip install --no-cache-dir -r Python/Functions.Tests/requirements.txt
+python -m pytest Python/Functions.Tests -q
+```
+
+Run:
+
+Set the local Functions settings first. The minimum useful values are:
 
 ```text
-userkey=local-dev-password
+AzureWebJobsStorage=UseDevelopmentStorage=true
+FUNCTIONS_WORKER_RUNTIME=python
 ```
 
-### Run the Python API
+Then start the local host:
 
-1. Change to the API folder.
-   ```bash
-   cd Python/Api
-   ```
-2. Start the application directly.
-   ```bash
-   python Carsharing.py
-   ```
+```bash
+cd Python/Functions
+func start
+```
 
-The API is available at `http://localhost:8086`.
+Default local URL:
+`http://localhost:7071`
 
-### Run the Python API with Uvicorn
+Docker image:
 
-1. Change to the API folder.
-   ```bash
-   cd Python/Api
-   ```
-2. Start Uvicorn.
-   ```bash
-   uvicorn Carsharing:app --port 8086 --reload
-   ```
+```bash
+docker build -f Python/Functions/DockerFile -t best-practices-python-functions:v1 Python/Functions
+docker run --rm -p 7073:80 -e AzureWebJobsStorage=UseDevelopmentStorage=true -e FUNCTIONS_WORKER_RUNTIME=python best-practices-python-functions:v1
+```
 
-### Run Python Unit Tests
+## Quick Verification After Clone
 
-The Python API tests live in `Python/Api.Tests` and use `pytest` plus FastAPI `TestClient`.
+If you want to validate the repository after cloning it, run:
 
-1. Install the test dependencies.
-   ```bash
-   python -m pip install --no-cache-dir -r Python/Api.Tests/requirements.txt
-   ```
-2. Run the tests from the repository root.
-   ```bash
-   python -m pytest Python/Api.Tests -q
-   ```
+```bash
+dotnet test DotNet/Api.Tests/Api.Tests.csproj
+dotnet test DotNet/Functions.Tests/Functions.Tests.csproj
+python -m pytest Python/Api.Tests -q
+python -m pytest Python/Functions.Tests -q
+```
 
-The test fixture copies `Python/Api/Sources/cars.json` to a temporary location so the real seed data is not modified during test runs.
+## Notes
 
-### Build the Python Docker Image
-
-1. Change to the API folder.
-   ```bash
-   cd Python/Api
-   ```
-2. Build the image.
-   ```bash
-   docker build -f ./DockerFile -t python-api:v1 .
-   ```
-3. Run the container.
-   ```bash
-   docker run -p 8086:8086 python-api:v1
-   ```
-
-## Summary Notes
-
-- The repository contains parallel .NET and Python API examples plus Azure Functions samples.
-- The Python API now has a dedicated `Python/Api.Tests` project with isolated `pytest` fixtures and baseline coverage for authentication and car endpoints.
-- Python tests depend on both the API packages and test packages listed in `Python/Api.Tests/requirements.txt`.
-- The Python API requires `Python/Api/appsettings` to define `userkey` before the app or tests can start successfully.
+- `best-practices-poc.sln` tracks the `.NET` application and test projects.
+- The Python test suites are separated into `Api.Tests` and `Functions.Tests` so each app keeps focused dependencies.
+- The Docker commands above assume you run them from the repository root.
+- The Function projects need local Azure Functions configuration before `func start` will succeed.
