@@ -20,6 +20,16 @@ best-practices-poc/
 |   |-- Api/                 # ASP.NET Core API
 |   |-- Api.Tests/           # Unit tests for DotNet/Api
 |   |-- Functions/           # Azure Functions isolated worker app
+|   |-- Patterns/            # Runnable .NET console samples for principles and patterns
+|   |   |-- DesignPrinciples/
+|   |   |   `-- SolidPrinciples/
+|   |   `-- DesignPatterns/
+|   |       |-- Creational/
+|   |       |   `-- CreationalPatterns/
+|   |       |-- Structural/
+|   |       |   `-- StructuralPatterns/
+|   |       `-- Behavioral/
+|   |           `-- BehavioralPatterns/
 |   `-- Functions.Tests/     # Unit tests for DotNet/Functions
 |-- Python/
 |   |-- Api/                 # FastAPI app
@@ -124,6 +134,117 @@ Docker image:
 ```bash
 docker build -f DotNet/Functions/DockerFile -t best-practices-dotnet-functions:v1 DotNet/Functions
 docker run --rm -p 7071:80 -e AzureWebJobsStorage=UseDevelopmentStorage=true -e FUNCTIONS_WORKER_RUNTIME=dotnet-isolated -e FUNCTIONS_EXTENSION_VERSION=~4 -e ASPNETCORE_URLS=http://0.0.0.0:80 -e CarsApiBaseUrl=http://host.docker.internal:8086/ -e CarsApiUser=userkey -e CarsApiKey=<insertkey> -e UseRedisCache=false best-practices-dotnet-functions:v1
+```
+
+### DotNet/Patterns
+
+Purpose:
+Runnable `.NET 8` console projects that demonstrate SOLID principles and the full GoF design pattern categories in current C# examples. Each source file includes descriptive comments so the intent of every sample is easy to follow.
+
+Read this area on GitHub:
+
+- Start with the project that matches the topic you want to explore.
+- Open the `Program.cs` file in each sample to see the commented examples and console output flow.
+- These samples intentionally use simple in-memory scenarios so the design ideas stay easy to understand.
+
+#### DotNet/Patterns/DesignPrinciples/SolidPrinciples
+
+Purpose:
+Demonstrates the five SOLID principles:
+
+- Single Responsibility Principle
+- Open/Closed Principle
+- Liskov Substitution Principle
+- Interface Segregation Principle
+- Dependency Inversion Principle
+
+Build:
+
+```bash
+dotnet build DotNet/Patterns/DesignPrinciples/SolidPrinciples/SolidPrinciples.csproj
+```
+
+Run:
+
+```bash
+dotnet run --project DotNet/Patterns/DesignPrinciples/SolidPrinciples/SolidPrinciples.csproj
+```
+
+#### DotNet/Patterns/DesignPatterns/Creational/CreationalPatterns
+
+Purpose:
+Demonstrates the creational design patterns:
+
+- Abstract Factory
+- Builder
+- Factory Method
+- Prototype
+- Singleton
+
+Build:
+
+```bash
+dotnet build DotNet/Patterns/DesignPatterns/Creational/CreationalPatterns/CreationalPatterns.csproj
+```
+
+Run:
+
+```bash
+dotnet run --project DotNet/Patterns/DesignPatterns/Creational/CreationalPatterns/CreationalPatterns.csproj
+```
+
+#### DotNet/Patterns/DesignPatterns/Structural/StructuralPatterns
+
+Purpose:
+Demonstrates the structural design patterns:
+
+- Adapter
+- Bridge
+- Composite
+- Decorator
+- Facade
+- Flyweight
+- Proxy
+
+Build:
+
+```bash
+dotnet build DotNet/Patterns/DesignPatterns/Structural/StructuralPatterns/StructuralPatterns.csproj
+```
+
+Run:
+
+```bash
+dotnet run --project DotNet/Patterns/DesignPatterns/Structural/StructuralPatterns/StructuralPatterns.csproj
+```
+
+#### DotNet/Patterns/DesignPatterns/Behavioral/BehavioralPatterns
+
+Purpose:
+Demonstrates the behavioral design patterns:
+
+- Chain of Responsibility
+- Command
+- Interpreter
+- Iterator
+- Mediator
+- Memento
+- Observer
+- State
+- Strategy
+- Template Method
+- Visitor
+
+Build:
+
+```bash
+dotnet build DotNet/Patterns/DesignPatterns/Behavioral/BehavioralPatterns/BehavioralPatterns.csproj
+```
+
+Run:
+
+```bash
+dotnet run --project DotNet/Patterns/DesignPatterns/Behavioral/BehavioralPatterns/BehavioralPatterns.csproj
 ```
 
 ### Python/Api
@@ -237,13 +358,17 @@ If you want to validate the repository after cloning it, run:
 ```bash
 dotnet test DotNet/Api.Tests/Api.Tests.csproj
 dotnet test DotNet/Functions.Tests/Functions.Tests.csproj
+dotnet build DotNet/Patterns/DesignPrinciples/SolidPrinciples/SolidPrinciples.csproj
+dotnet build DotNet/Patterns/DesignPatterns/Creational/CreationalPatterns/CreationalPatterns.csproj
+dotnet build DotNet/Patterns/DesignPatterns/Structural/StructuralPatterns/StructuralPatterns.csproj
+dotnet build DotNet/Patterns/DesignPatterns/Behavioral/BehavioralPatterns/BehavioralPatterns.csproj
 python -m pytest Python/Api.Tests -q
 python -m pytest Python/Functions.Tests -q
 ```
 
 ## Notes
 
-- `best-practices-poc.sln` tracks the `.NET` application and test projects.
+- `best-practices-poc.sln` tracks the `.NET` application, test, and patterns sample projects.
 - The Python test suites are separated into `Api.Tests` and `Functions.Tests` so each app keeps focused dependencies.
 - The Docker commands above assume you run them from the repository root.
 - The Function projects need local Azure Functions configuration before `func start` will succeed.
