@@ -32,10 +32,12 @@ best-practices-poc/
 |   |           `-- BehavioralPatterns/
 |   `-- Functions.Tests/     # Unit tests for DotNet/Functions
 |-- Python/
-|   |-- Api/                 # FastAPI app
-|   |-- Api.Tests/           # Pytest suite for Python/Api
-|   |-- Functions/           # Python Azure Functions app
-|   `-- Functions.Tests/     # Pytest suite for Python/Functions
+|   |-- Api/                         # FastAPI app
+|   |-- Api.Tests/                   # Pytest suite for Python/Api
+|   |-- API.AzStorageAccount/        # FastAPI app for Azure Blob Storage account operations
+|   |-- API.AzStorageAccount.Tests/  # Pytest suite for Python/API.AzStorageAccount
+|   |-- Functions/                   # Python Azure Functions app
+|   `-- Functions.Tests/             # Pytest suite for Python/Functions
 |-- best-practices-poc.sln   # Visual Studio solution for .NET projects
 `-- README.md
 ```
@@ -299,6 +301,62 @@ docker build -f Python/Api/DockerFile -t best-practices-python-api:v1 Python/Api
 docker run --rm -p 8086:8086 best-practices-python-api:v1
 ```
 
+### Python/API.AzStorageAccount
+
+Purpose:
+FastAPI app that exposes authenticated REST endpoints for Azure Blob Storage account container and blob operations using SAS token authentication through the Azure Storage SDK.
+
+Read this project on GitHub:
+
+- Start with `Python/API.AzStorageAccount/main.py` for startup, dependency wiring, and routes.
+- Open `Python/API.AzStorageAccount/auth.py` for the Basic-to-JWT authentication flow copied from the current Python API shape.
+- Open `Python/API.AzStorageAccount/storage_gateway.py` for the Azure SDK gateway and design-pattern comments.
+- Review `Python/API.AzStorageAccount/appsettings` for the configurable storage account URL and SAS token values.
+- Open `Python/API.AzStorageAccount.Tests/` next to see the isolated pytest coverage.
+
+Build:
+
+The local build step is installing the application dependencies.
+
+```bash
+python -m pip install --no-cache-dir -r Python/API.AzStorageAccount/requirements.txt
+```
+
+Test:
+
+The tests use a fake storage gateway, so they do not require a live Azure Storage account or real SAS token.
+
+```bash
+python -m pip install --no-cache-dir -r Python/API.AzStorageAccount.Tests/requirements.txt
+python -m pytest Python/API.AzStorageAccount.Tests -q
+```
+
+Run:
+
+Before running locally, update `Python/API.AzStorageAccount/appsettings` with:
+
+```text
+userkey=<insertkey>
+storage_account_url=https://<account-name>.blob.core.windows.net
+storage_sas_token=<insert-sas-token>
+```
+
+Then start the API:
+
+```bash
+python -m uvicorn main:app --app-dir Python/API.AzStorageAccount --host 0.0.0.0 --port 8087
+```
+
+Alternative run command from the project folder:
+
+```bash
+cd Python/API.AzStorageAccount
+python main.py
+```
+
+Local URL:
+`http://localhost:8087`
+
 ### Python/Functions
 
 Purpose:
@@ -363,12 +421,13 @@ dotnet build DotNet/Patterns/DesignPatterns/Creational/CreationalPatterns/Creati
 dotnet build DotNet/Patterns/DesignPatterns/Structural/StructuralPatterns/StructuralPatterns.csproj
 dotnet build DotNet/Patterns/DesignPatterns/Behavioral/BehavioralPatterns/BehavioralPatterns.csproj
 python -m pytest Python/Api.Tests -q
+python -m pytest Python/API.AzStorageAccount.Tests -q
 python -m pytest Python/Functions.Tests -q
 ```
 
 ## Notes
 
 - `best-practices-poc.sln` tracks the `.NET` application, test, and patterns sample projects.
-- The Python test suites are separated into `Api.Tests` and `Functions.Tests` so each app keeps focused dependencies.
+- The Python test suites are separated into `Api.Tests`, `API.AzStorageAccount.Tests`, and `Functions.Tests` so each app keeps focused dependencies.
 - The Docker commands above assume you run them from the repository root.
 - The Function projects need local Azure Functions configuration before `func start` will succeed.

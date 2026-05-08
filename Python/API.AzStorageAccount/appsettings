@@ -1,0 +1,5 @@
+userkey=<insertkey>
+storage_account_url=<insertstorageaccounturi>
+storage_sas_token=<insertsaastoken>
+jwt_algorithm=HS256
+jwt_exp_minutes=60
