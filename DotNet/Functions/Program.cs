@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using StackExchange.Redis;
 using System.Net.Http.Headers;
 using System.Text;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Functions.Interfaces;
+using Functions.Services;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -28,6 +29,8 @@ var host = new HostBuilder()
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", basicAuthValue);
             }
         });
+        services.AddScoped<ICarsApiClient, CarsApiClient>();
+        services.AddScoped<ICarsCacheWriter, RedisCarsCacheWriter>();
         // Commenting for later use on DI Redis connection (using connection string)
         // services.AddSingleton<IConnectionMultiplexer>(_ =>
         // {

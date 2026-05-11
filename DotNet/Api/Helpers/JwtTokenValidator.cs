@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Helpers
 {
+    // Single Responsibility Principle (SOLID): token validation is isolated from application startup and controllers.
     public class JwtTokenValidator
     {
         public static ClaimsPrincipal? ValidateToken(string token, string issuer, string audience, string signingKey)

@@ -5,6 +5,7 @@ using StackExchange.Redis;
 
 namespace Api.Services;
 
+// Proxy pattern: controls access to Redis while preserving the same vehicle cache contract for callers.
 public class CarCacheService : ICarCache
 {
     private readonly IConnectionMultiplexer _mux;

@@ -7,12 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 public class EmployeesController : ControllerBase
 {
     private readonly IEmployeeRepository _repo;
-    private readonly ICarCache _vehicleCache;
+    private readonly IEmployeeVehicleReader _vehicleReader;
+    private readonly IEmployeeVehicleWriter _vehicleWriter;
 
-    public EmployeesController(IEmployeeRepository repo, ICarCache carCache)
+    public EmployeesController(
+        IEmployeeRepository repo,
+        IEmployeeVehicleReader vehicleReader,
+        IEmployeeVehicleWriter vehicleWriter)
     {
         _repo = repo;
-        _vehicleCache = carCache;
+        _vehicleReader = vehicleReader;
+        _vehicleWriter = vehicleWriter;
     }
 
     // GET /api/employees/{id}
@@ -24,7 +29,7 @@ public class EmployeesController : ControllerBase
         var employee = await _repo.GetAsync(id);
         if (employee is null) return NotFound();
 
-        employee.Vehicles = await _vehicleCache.GetVehiclesForEmployeeAsync(id);
+        employee.Vehicles = await _vehicleReader.GetVehiclesForEmployeeAsync(id);
         return Ok(employee);
     }
 
@@ -54,8 +59,12 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
-        await _vehicleCache.DeleteVehiclesForEmployeeAsync(id); // optional cache cleanup
         var ok = await _repo.DeleteAsync(id);
+        if (ok)
+        {
+            await _vehicleWriter.DeleteVehiclesForEmployeeAsync(id);
+        }
+
         return ok ? NoContent() : NotFound();
     }
 
@@ -64,7 +73,7 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(typeof(List<Car>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<Car>>> GetVehicles(int id, CancellationToken ct)
     {
-        var vehicles = await _vehicleCache.GetVehiclesForEmployeeAsync(id);
+        var vehicles = await _vehicleReader.GetVehiclesForEmployeeAsync(id);
         return Ok(vehicles);
     }
 
@@ -73,7 +82,7 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutVehicles(int id, [FromBody] List<Car> vehicles, CancellationToken ct)
     {
-        await _vehicleCache.SetVehiclesForEmployeeAsync(id, vehicles);
+        await _vehicleWriter.SetVehiclesForEmployeeAsync(id, vehicles);
         return NoContent();
     }
 }

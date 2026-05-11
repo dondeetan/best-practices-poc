@@ -1,13 +1,13 @@
-using System.Net.Http;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
 using Api.Entities;
 using Api.Interfaces;
+using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;
 
 namespace Api.Services;
 
-public class CarApiService : ICarCache
+// Adapter pattern: adapts the remote Cars API to the local vehicle reader abstraction used by controllers.
+public class CarApiService : IEmployeeVehicleReader
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
@@ -41,17 +41,6 @@ public class CarApiService : ICarCache
         }
     }
 
-    public Task SetVehiclesForEmployeeAsync(int employeeId, List<Car> vehicles)
-    {
-        throw new NotImplementedException("Setting vehicles is not supported via API");
-    }
-
-    public Task DeleteVehiclesForEmployeeAsync(int employeeId)
-    {
-        throw new NotImplementedException("Deleting vehicles is not supported via API");
-    }
-
-    
     private async Task<string?> GetApiTokenAsync(HttpClient client)
     {
         var tokenResponse = await client.PostAsync("auth/token", null);
