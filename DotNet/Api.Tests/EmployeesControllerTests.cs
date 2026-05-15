@@ -15,7 +15,7 @@ public class EmployeesControllerTests
         var cache = new Mock<ICarCache>();
         repo.Setup(x => x.GetAsync(42)).ReturnsAsync((Employee?)null);
 
-        var controller = new EmployeesController(repo.Object, cache.Object);
+        var controller = new EmployeesController(repo.Object, cache.Object, cache.Object);
         var result = await controller.GetById(42, CancellationToken.None);
 
         Assert.IsType<NotFoundResult>(result.Result);
@@ -32,7 +32,7 @@ public class EmployeesControllerTests
         repo.Setup(x => x.GetAsync(1)).ReturnsAsync(employee);
         cache.Setup(x => x.GetVehiclesForEmployeeAsync(1)).ReturnsAsync(vehicles);
 
-        var controller = new EmployeesController(repo.Object, cache.Object);
+        var controller = new EmployeesController(repo.Object, cache.Object, cache.Object);
         var result = await controller.GetById(1, CancellationToken.None);
 
         var ok = Assert.IsType<OkObjectResult>(result.Result);
@@ -50,7 +50,7 @@ public class EmployeesControllerTests
         var created = new Employee { Id = 99, FirstName = "Jane", LastName = "Doe", Email = "jane@example.com", Vehicles = [] };
 
         repo.Setup(x => x.CreateAsync(input)).ReturnsAsync(created);
-        var controller = new EmployeesController(repo.Object, cache.Object);
+        var controller = new EmployeesController(repo.Object, cache.Object, cache.Object);
 
         var result = await controller.Create(input, CancellationToken.None);
 
@@ -67,7 +67,7 @@ public class EmployeesControllerTests
         var input = new Employee { Id = 1234, FirstName = "X", LastName = "Y", Email = "x@y.com", Vehicles = [] };
 
         repo.Setup(x => x.UpdateAsync(5, It.IsAny<Employee>())).ReturnsAsync(true);
-        var controller = new EmployeesController(repo.Object, cache.Object);
+        var controller = new EmployeesController(repo.Object, cache.Object, cache.Object);
 
         var result = await controller.Update(5, input, CancellationToken.None);
 
@@ -80,18 +80,18 @@ public class EmployeesControllerTests
     }
 
     [Fact]
-    public async Task Delete_WhenRepoMisses_ReturnsNotFound_AndStillCleansCache()
+    public async Task Delete_WhenRepoMisses_ReturnsNotFound_AndSkipsCacheCleanup()
     {
         var repo = new Mock<IEmployeeRepository>();
         var cache = new Mock<ICarCache>();
 
         repo.Setup(x => x.DeleteAsync(3)).ReturnsAsync(false);
-        var controller = new EmployeesController(repo.Object, cache.Object);
+        var controller = new EmployeesController(repo.Object, cache.Object, cache.Object);
 
         var result = await controller.Delete(3, CancellationToken.None);
 
         Assert.IsType<NotFoundResult>(result);
-        cache.Verify(x => x.DeleteVehiclesForEmployeeAsync(3), Times.Once);
+        cache.Verify(x => x.DeleteVehiclesForEmployeeAsync(3), Times.Never);
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class EmployeesControllerTests
         var repo = new Mock<IEmployeeRepository>();
         var cache = new Mock<ICarCache>();
         var vehicles = new List<Car> { new() { Id = 1, EmployeeId = 12, Fuel = "hybrid" } };
-        var controller = new EmployeesController(repo.Object, cache.Object);
+        var controller = new EmployeesController(repo.Object, cache.Object, cache.Object);
 
         var result = await controller.PutVehicles(12, vehicles, CancellationToken.None);
 

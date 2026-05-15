@@ -48,7 +48,9 @@ builder.Services.AddAuthentication("Bearer")
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
-                System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"]))
+                System.Text.Encoding.UTF8.GetBytes(
+                    builder.Configuration["Jwt:SigningKey"]
+                    ?? throw new InvalidOperationException("Jwt:SigningKey not set")))
         };
     });
 
@@ -63,8 +65,9 @@ builder.Services.Configure<JsonOptions>(o =>
     o.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
-// Use CarApiService instead of CarCacheService
-builder.Services.AddScoped<ICarCache, CarApiService>();
+// Dependency Inversion Principle (SOLID): controllers depend on vehicle abstractions, while startup chooses the concrete adapters.
+builder.Services.AddScoped<IEmployeeVehicleReader, CarApiService>();
+builder.Services.AddScoped<IEmployeeVehicleWriter, NoOpEmployeeVehicleWriter>();
 builder.Services.AddSingleton<IEmployeeRepository, InMemoryEmployeeRepositoryService>();
 
 // Configure the HTTP request pipeline.
@@ -74,22 +77,5 @@ app.UseSwaggerUI();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-// Example usage of JwtTokenValidator
-var jwtToken = "your-jwt-token"; // Replace with the actual token
-var issuer = builder.Configuration["Jwt:Issuer"] ?? string.Empty;
-var audience = builder.Configuration["Jwt:Audience"] ?? string.Empty;
-var signingKey = builder.Configuration["Jwt:SigningKey"] ?? string.Empty;
-
-var claimsPrincipal = Api.Helpers.JwtTokenValidator.ValidateToken(jwtToken, issuer, audience, signingKey);
-
-if (claimsPrincipal == null)
-{
-    Console.WriteLine("Invalid token");
-}
-else
-{
-    Console.WriteLine("Valid token");
-}
 
 app.Run();
