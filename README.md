@@ -141,12 +141,13 @@ docker run --rm -p 7071:80 -e AzureWebJobsStorage=UseDevelopmentStorage=true -e 
 ### DotNet/Patterns
 
 Purpose:
-Runnable `.NET 8` console projects that demonstrate SOLID principles and the full GoF design pattern categories in current C# examples. Each source file includes descriptive comments so the intent of every sample is easy to follow.
+Runnable `.NET 8` console projects that demonstrate SOLID principles and the full GoF design pattern categories in current C# examples. Each principle or pattern is extracted into its own source file with a description and a practical usage-frequency note.
 
 Read this area on GitHub:
 
 - Start with the project that matches the topic you want to explore.
-- Open the `Program.cs` file in each sample to see the commented examples and console output flow.
+- Open the `Program.cs` file in each sample to see the console output flow.
+- Open the individual principle or pattern class file for the implementation, description, and usage-frequency note.
 - These samples intentionally use simple in-memory scenarios so the design ideas stay easy to understand.
 
 #### DotNet/Patterns/DesignPrinciples/SolidPrinciples
@@ -154,11 +155,13 @@ Read this area on GitHub:
 Purpose:
 Demonstrates the five SOLID principles:
 
-- Single Responsibility Principle
-- Open/Closed Principle
-- Liskov Substitution Principle
-- Interface Segregation Principle
-- Dependency Inversion Principle
+- `SingleResponsibilityPrinciple.cs`
+- `OpenClosedPrinciple.cs`
+- `LiskovSubstitutionPrinciple.cs`
+- `InterfaceSegregationPrinciple.cs`
+- `DependencyInversionPrinciple.cs`
+
+`Program.cs` seeds the sample data and invokes each principle runner. Shared work-item support types live in `WorkItems.cs`.
 
 Build:
 
@@ -177,11 +180,13 @@ dotnet run --project DotNet/Patterns/DesignPrinciples/SolidPrinciples/SolidPrinc
 Purpose:
 Demonstrates the creational design patterns:
 
-- Abstract Factory
-- Builder
-- Factory Method
-- Prototype
-- Singleton
+- `AbstractFactoryPattern.cs`
+- `BuilderPattern.cs`
+- `FactoryMethodPattern.cs`
+- `PrototypePattern.cs`
+- `SingletonPattern.cs`
+
+`Program.cs` invokes the pattern runners in the classic creational pattern order.
 
 Build:
 
@@ -200,13 +205,15 @@ dotnet run --project DotNet/Patterns/DesignPatterns/Creational/CreationalPattern
 Purpose:
 Demonstrates the structural design patterns:
 
-- Adapter
-- Bridge
-- Composite
-- Decorator
-- Facade
-- Flyweight
-- Proxy
+- `AdapterPattern.cs`
+- `BridgePattern.cs`
+- `CompositePattern.cs`
+- `DecoratorPattern.cs`
+- `FacadePattern.cs`
+- `FlyweightPattern.cs`
+- `ProxyPattern.cs`
+
+`Program.cs` invokes the pattern runners in the classic structural pattern order.
 
 Build:
 
@@ -225,17 +232,19 @@ dotnet run --project DotNet/Patterns/DesignPatterns/Structural/StructuralPattern
 Purpose:
 Demonstrates the behavioral design patterns:
 
-- Chain of Responsibility
-- Command
-- Interpreter
-- Iterator
-- Mediator
-- Memento
-- Observer
-- State
-- Strategy
-- Template Method
-- Visitor
+- `ChainOfResponsibilityPattern.cs`
+- `CommandPattern.cs`
+- `InterpreterPattern.cs`
+- `IteratorPattern.cs`
+- `MediatorPattern.cs`
+- `MementoPattern.cs`
+- `ObserverPattern.cs`
+- `StatePattern.cs`
+- `StrategyPattern.cs`
+- `TemplateMethodPattern.cs`
+- `VisitorPattern.cs`
+
+`Program.cs` invokes the pattern runners in the classic behavioral pattern order.
 
 Build:
 
