@@ -21,6 +21,7 @@ TestResults/
 *.user
 *.suo
 *.rsuser
+*.lscache
 
 # Python Virtual Environment
 myenv/
