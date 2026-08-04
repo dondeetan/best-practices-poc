@@ -1,5 +1,5 @@
 # This instruction initializes a new build stage and sets the Base Image for the remaining
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build-env
 # sets the working directory for any remaining RUN, CMD, ENTRYPOINT, COPY, and ADD Dockerfile instructions. If the directory doesn't exist, it's created. In this case, WORKDIR is set to the app directory.
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN dotnet restore ./Api/Api.csproj
 RUN dotnet publish ./Api/Api.csproj -c Release -o out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 
 # attempt to resolve Trivy scan issues
 RUN apt update && apt upgrade -y
