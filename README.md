@@ -270,6 +270,24 @@ Read this project on GitHub:
 - Review `Python/Api/Sources/cars.json` for the seed data.
 - Open `Python/Api.Tests/` next to see the isolated pytest coverage.
 
+Create and activate a virtual environment from the repository root:
+
+```powershell
+# Windows PowerShell
+python -m venv .venv/python-api
+.\.venv\python-api\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+```
+
+```bash
+# macOS or Linux
+python3 -m venv .venv/python-api
+source .venv/python-api/bin/activate
+python -m pip install --upgrade pip
+```
+
+Use this environment for both `Python/Api` and `Python/Api.Tests`. Run `deactivate` when you are finished or before activating another project's environment.
+
 Build:
 
 The local build step is installing the application dependencies.
@@ -322,6 +340,24 @@ Read this project on GitHub:
 - Open `Python/API.AzStorageAccount/storage_gateway.py` for the Azure SDK gateway and design-pattern comments.
 - Review `Python/API.AzStorageAccount/appsettings` for the configurable storage account URL and SAS token values.
 - Open `Python/API.AzStorageAccount.Tests/` next to see the isolated pytest coverage.
+
+Create and activate a virtual environment from the repository root:
+
+```powershell
+# Windows PowerShell
+python -m venv .venv/python-az-storage-api
+.\.venv\python-az-storage-api\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+```
+
+```bash
+# macOS or Linux
+python3 -m venv .venv/python-az-storage-api
+source .venv/python-az-storage-api/bin/activate
+python -m pip install --upgrade pip
+```
+
+Use this environment for both `Python/API.AzStorageAccount` and `Python/API.AzStorageAccount.Tests`. Run `deactivate` when you are finished or before activating another project's environment.
 
 Build:
 
@@ -377,6 +413,24 @@ Read this project on GitHub:
 - Review `Python/Functions/requirements.txt` and `Python/Functions/host.json` for runtime dependencies and host configuration.
 - Open `Python/Functions.Tests/` next to see the unit tests for the trigger functions.
 
+Create and activate a virtual environment from the repository root:
+
+```powershell
+# Windows PowerShell
+python -m venv .venv/python-functions
+.\.venv\python-functions\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+```
+
+```bash
+# macOS or Linux
+python3 -m venv .venv/python-functions
+source .venv/python-functions/bin/activate
+python -m pip install --upgrade pip
+```
+
+Use this environment for both `Python/Functions` and `Python/Functions.Tests`. Run `deactivate` when you are finished or before activating another project's environment.
+
 Build:
 
 The local build step is installing the function app dependencies.
@@ -420,7 +474,7 @@ docker run --rm -p 7073:80 -e AzureWebJobsStorage=UseDevelopmentStorage=true -e 
 
 ## Quick Verification After Clone
 
-If you want to validate the repository after cloning it, run:
+If you want to validate the repository after cloning it, run the `.NET` commands directly. For each Python test command, first create or activate its matching virtual environment as described above and install the test project's requirements.
 
 ```bash
 dotnet test DotNet/Api.Tests/Api.Tests.csproj
