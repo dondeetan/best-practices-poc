@@ -28,7 +28,7 @@ public class CarCacheService : ICarCache
     {
         var json = await _db.StringGetAsync(Key(employeeId));
         if (json.IsNullOrEmpty) return new List<Car>();
-        return JsonSerializer.Deserialize<List<Car>>(json!, _json) ?? new List<Car>();
+        return JsonSerializer.Deserialize<List<Car>>(json.ToString(), _json) ?? new List<Car>();
     }
 
     public async Task SetVehiclesForEmployeeAsync(int employeeId, List<Car> vehicles)
