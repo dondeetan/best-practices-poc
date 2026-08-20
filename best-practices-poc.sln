@@ -3,35 +3,35 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DotNet", "DotNet", "{71E6E750-85FD-B5BC-4321-E01377EC6231}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{71E6E750-85FD-B5BC-4321-E01377EC6231}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "DotNet\Api\Api.csproj", "{5DBEE51E-1A7D-78BA-E555-55B2BAD10E8F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\dotnet\api\Api.csproj", "{5DBEE51E-1A7D-78BA-E555-55B2BAD10E8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functions", "DotNet\Functions\Functions.csproj", "{9FAD232A-89F9-FFC6-6F78-76AAE9E3D5D5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functions", "src\dotnet\functions\Functions.csproj", "{9FAD232A-89F9-FFC6-6F78-76AAE9E3D5D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Tests", "DotNet\Api.Tests\Api.Tests.csproj", "{7E8F4243-A257-4D96-AC08-C1984B7BC58B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Tests", "src\dotnet\api.tests\Api.Tests.csproj", "{7E8F4243-A257-4D96-AC08-C1984B7BC58B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functions.Tests", "DotNet\Functions.Tests\Functions.Tests.csproj", "{79490CA0-1D9C-476D-9229-F5E62EEC6E71}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functions.Tests", "src\dotnet\functions.tests\Functions.Tests.csproj", "{79490CA0-1D9C-476D-9229-F5E62EEC6E71}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Patterns", "Patterns", "{DE315B80-B121-E191-ED45-E00EFA1EEBA7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "patterns", "patterns", "{DE315B80-B121-E191-ED45-E00EFA1EEBA7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DesignPrinciples", "DesignPrinciples", "{3ABEC619-67BA-3084-A82B-C1C2D9A8AB83}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "designprinciples", "designprinciples", "{3ABEC619-67BA-3084-A82B-C1C2D9A8AB83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidPrinciples", "DotNet\Patterns\DesignPrinciples\SolidPrinciples\SolidPrinciples.csproj", "{40E73387-C1C9-45C3-9AB8-BFC64E028ADE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidPrinciples", "src\dotnet\patterns\designprinciples\solidprinciples\SolidPrinciples.csproj", "{40E73387-C1C9-45C3-9AB8-BFC64E028ADE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DesignPatterns", "DesignPatterns", "{40E50665-1907-BED9-86E7-D16409D086F5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "designpatterns", "designpatterns", "{40E50665-1907-BED9-86E7-D16409D086F5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Creational", "Creational", "{5E0EDC22-49D1-0C99-5409-03390311E88A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "creational", "creational", "{5E0EDC22-49D1-0C99-5409-03390311E88A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreationalPatterns", "DotNet\Patterns\DesignPatterns\Creational\CreationalPatterns\CreationalPatterns.csproj", "{04D0C9DB-E890-489F-BCCB-8142E05E8513}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreationalPatterns", "src\dotnet\patterns\designpatterns\creational\creationalpatterns\CreationalPatterns.csproj", "{04D0C9DB-E890-489F-BCCB-8142E05E8513}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Structural", "Structural", "{C2A1823A-DE1A-86B0-9636-1A11645FFD12}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "structural", "structural", "{C2A1823A-DE1A-86B0-9636-1A11645FFD12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StructuralPatterns", "DotNet\Patterns\DesignPatterns\Structural\StructuralPatterns\StructuralPatterns.csproj", "{F7C8B267-57E5-49E2-9009-3B6F46B0F6DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StructuralPatterns", "src\dotnet\patterns\designpatterns\structural\structuralpatterns\StructuralPatterns.csproj", "{F7C8B267-57E5-49E2-9009-3B6F46B0F6DB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Behavioral", "Behavioral", "{E6DB4DC3-3CD8-1092-163E-34BD27B0885E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "behavioral", "behavioral", "{E6DB4DC3-3CD8-1092-163E-34BD27B0885E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BehavioralPatterns", "DotNet\Patterns\DesignPatterns\Behavioral\BehavioralPatterns\BehavioralPatterns.csproj", "{4E4B431C-F8A9-422C-85E7-8A030CD26AD8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BehavioralPatterns", "src\dotnet\patterns\designpatterns\behavioral\behavioralpatterns\BehavioralPatterns.csproj", "{4E4B431C-F8A9-422C-85E7-8A030CD26AD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

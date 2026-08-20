@@ -8,7 +8,7 @@ from passlib.context import CryptContext
 from pydantic_settings import BaseSettings
 import jwt  # PyJWT
 
-from Entities.Cars import load_db, save_db, CarInput, CarOutput, TripOutput, TripInput
+from entities.Cars import load_db, save_db, CarInput, CarOutput, TripOutput, TripInput
 
 
 class Settings(BaseSettings):

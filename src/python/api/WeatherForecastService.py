@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from Entities.WeatherForecast import WeatherForecast
+from entities.WeatherForecast import WeatherForecast
 from datetime import timedelta, datetime
 import random
 import uvicorn

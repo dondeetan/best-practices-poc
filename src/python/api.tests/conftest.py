@@ -8,8 +8,8 @@ from fastapi.testclient import TestClient
 
 
 TESTS_DIR = Path(__file__).resolve().parent
-API_DIR = TESTS_DIR.parent / "Api"
-SOURCE_DB = API_DIR / "Sources" / "cars.json"
+API_DIR = TESTS_DIR.parent / "api"
+SOURCE_DB = API_DIR / "sources" / "cars.json"
 
 
 if str(API_DIR) not in sys.path:
@@ -24,7 +24,7 @@ def client(tmp_path, monkeypatch):
     monkeypatch.chdir(API_DIR)
 
     import Carsharing
-    import Entities.Cars as cars_module
+    import entities.Cars as cars_module
 
     cars_module.file_path = str(db_copy)
     Carsharing.db = copy.deepcopy(cars_module.load_db())

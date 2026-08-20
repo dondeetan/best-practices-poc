@@ -6,7 +6,7 @@ from fastapi.testclient import TestClient
 
 
 TESTS_DIR = Path(__file__).resolve().parent
-API_DIR = TESTS_DIR.parent / "API.AzStorageAccount"
+API_DIR = TESTS_DIR.parent / "api.azstorageaccount"
 
 if str(API_DIR) not in sys.path:
     sys.path.insert(0, str(API_DIR))

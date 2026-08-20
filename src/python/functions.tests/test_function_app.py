@@ -6,7 +6,7 @@ import azure.functions as func
 
 
 TESTS_DIR = Path(__file__).resolve().parent
-FUNCTIONS_DIR = TESTS_DIR.parent / "Functions"
+FUNCTIONS_DIR = TESTS_DIR.parent / "functions"
 
 
 if str(FUNCTIONS_DIR) not in sys.path:
